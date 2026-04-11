@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"sync"
 )
 
 // Side represents a side of the board.
@@ -52,17 +53,27 @@ type Position struct {
 	moveCount       int
 	inCheck         bool
 	validMoves      []*Move
+	validMovesOnce  sync.Once
 }
 
 const (
 	startFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 )
 
+var startingPosition *Position
+
+func init() {
+	pos, err := decodeFEN(startFEN)
+	if err != nil {
+		panic("failed to decode starting FEN: " + err.Error())
+	}
+	startingPosition = pos
+}
+
 // StartingPosition returns the starting position
 // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 func StartingPosition() *Position {
-	pos, _ := decodeFEN(startFEN)
-	return pos
+	return startingPosition
 }
 
 // Update returns a new position resulting from the given move.
@@ -110,10 +121,9 @@ func (pos *Position) Update(m *Move) *Position {
 
 // ValidMoves returns a list of valid moves for the position.
 func (pos *Position) ValidMoves() []*Move {
-	if pos.validMoves != nil {
-		return append([]*Move(nil), pos.validMoves...)
-	}
-	pos.validMoves = engine{}.CalcMoves(pos, false)
+	pos.validMovesOnce.Do(func() {
+		pos.validMoves = engine{}.CalcMoves(pos, false)
+	})
 	return append([]*Move(nil), pos.validMoves...)
 }
 

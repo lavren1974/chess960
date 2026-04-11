@@ -458,6 +458,8 @@ func (b *Board) setBBForPiece(p Piece, bb bitboard) {
 		b.bbBlackKnight = bb
 	case BlackPawn:
 		b.bbBlackPawn = bb
+	case NoPiece:
+		return
 	default:
 		panic("invalid piece")
 	}

@@ -23,7 +23,7 @@ type BookECO struct {
 func NewBookECO() *BookECO {
 	startingPosition := &chess.Position{}
 	if err := startingPosition.UnmarshalText([]byte("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")); err != nil {
-		panic(err)
+		log.Fatal("failed to parse starting position: ", err)
 	}
 	b := &BookECO{
 		root: &node{
@@ -44,7 +44,9 @@ func NewBookECO() *BookECO {
 			continue
 		}
 		o := &Opening{code: row[0], title: row[1], pgn: row[3]}
-		b.insert(o)
+		if err := b.insert(o); err != nil {
+			log.Fatal(err)
+		}
 	}
 	return b
 }
@@ -89,7 +91,7 @@ func (b *BookECO) insert(o *Opening) error {
 		pos := posList[len(posList)-1]
 		m, err := chess.UCINotation{}.Decode(pos, s)
 		if err != nil {
-			panic(err)
+			return fmt.Errorf("invalid move %s in opening %s: %w", s, o.code, err)
 		}
 		moves = append(moves, m)
 		posList = append(posList, pos.Update(m))

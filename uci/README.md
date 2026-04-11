@@ -37,8 +37,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/notnil/chess"
-	"github.com/notnil/chess/uci"
+	"github.com/lavren1974/chess960"
+	"github.com/lavren1974/chess960/uci"
 )
 
 func main() {

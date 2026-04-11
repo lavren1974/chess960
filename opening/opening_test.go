@@ -8,7 +8,7 @@ import (
 	opening "github.com/lavren1974/chess960/opening"
 )
 
-func ExampleFind() {
+func ExampleBookECO_Find() {
 	g := chess.NewGame()
 	g.MoveStr("e4")
 	g.MoveStr("e6")
@@ -19,7 +19,7 @@ func ExampleFind() {
 	fmt.Println(o.Title())
 }
 
-func ExamplePossible() {
+func ExampleBookECO_Possible() {
 	g := chess.NewGame()
 	g.MoveStr("e4")
 	g.MoveStr("d5")

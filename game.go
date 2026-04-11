@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 )
 
 // A Outcome is the result of a game.
@@ -82,7 +81,7 @@ type Game struct {
 // function is designed to be used in the NewGame constructor.
 // An error is returned if there is a problem parsing the PGN data.
 func PGN(r io.Reader) (func(*Game), error) {
-	b, err := ioutil.ReadAll(r)
+	b, err := io.ReadAll(r)
 	if err != nil {
 		return nil, err
 	}
